@@ -5,13 +5,17 @@ task_bp = Blueprint('tasks', __name__)
 
 @task_bp.route('/', methods=['GET'])
 def get_tasks():
-    tasks = Task.get_all()
+    project_id = request.args.get('project_id')
+    if project_id:
+        tasks = Task.get_by_project(int(project_id))
+    else:
+        tasks = Task.get_all()
     return jsonify([task.to_dict() for task in tasks])
 
 @task_bp.route('/', methods=['POST'])
 def create_task():
     data = request.json
-    task = Task.create(data['title'], data['description'])
+    task = Task.create(data['title'], data['description'], data['project_id'])
     return jsonify(task.to_dict()), 201
 
 @task_bp.route('/<int:task_id>', methods=['PUT'])

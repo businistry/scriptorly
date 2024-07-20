@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import TaskList from '../components/TaskList';
 
 const ProjectPage = () => {
   const { id } = useParams();
@@ -72,6 +73,8 @@ const ProjectPage = () => {
           <pre>{generatedCode}</pre>
         </div>
       )}
+      <h2>Tasks</h2>
+      <TaskList projectId={id} />
     </div>
   );
 };
