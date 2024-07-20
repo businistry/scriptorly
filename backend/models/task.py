@@ -51,3 +51,50 @@ class Task:
             'project_id': self.project_id,
             'created_at': self.created_at.isoformat()
         }
+class Task:
+    tasks = []
+
+    def __init__(self, id, title, description, project_id, status="To Do"):
+        self.id = id
+        self.title = title
+        self.description = description
+        self.project_id = project_id
+        self.status = status
+
+    @classmethod
+    def create(cls, title, description, project_id):
+        task_id = len(cls.tasks) + 1
+        new_task = cls(task_id, title, description, project_id)
+        cls.tasks.append(new_task)
+        return new_task
+
+    @classmethod
+    def get_all(cls):
+        return cls.tasks
+
+    @classmethod
+    def get_by_project(cls, project_id):
+        return [task for task in cls.tasks if task.project_id == project_id]
+
+    @classmethod
+    def update(cls, task_id, data):
+        task = next((task for task in cls.tasks if task.id == task_id), None)
+        if task:
+            task.title = data.get('title', task.title)
+            task.description = data.get('description', task.description)
+            task.status = data.get('status', task.status)
+            return task
+        return None
+
+    @classmethod
+    def delete(cls, task_id):
+        cls.tasks = [task for task in cls.tasks if task.id != task_id]
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'project_id': self.project_id,
+            'status': self.status
+        }

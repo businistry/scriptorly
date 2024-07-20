@@ -31,3 +31,29 @@ def delete_task(task_id):
     if Task.delete(task_id):
         return '', 204
     return jsonify({"error": "Task not found"}), 404
+from flask import jsonify, request
+from backend.models.task import Task
+
+def create_task():
+    data = request.json
+    new_task = Task.create(data['title'], data['description'], data['project_id'])
+    return jsonify(new_task.to_dict()), 201
+
+def get_tasks():
+    project_id = request.args.get('project_id')
+    if project_id:
+        tasks = Task.get_by_project(int(project_id))
+    else:
+        tasks = Task.get_all()
+    return jsonify([task.to_dict() for task in tasks])
+
+def update_task(task_id):
+    data = request.json
+    updated_task = Task.update(task_id, data)
+    if updated_task:
+        return jsonify(updated_task.to_dict())
+    return jsonify({'error': 'Task not found'}), 404
+
+def delete_task(task_id):
+    Task.delete(task_id)
+    return '', 204
